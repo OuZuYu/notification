@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>导出图片和数据到Excel</title>
+  </head>
+  <body>
+    <button id="exportBtn">导出</button>
+  </body>
+  <script src="./export2Excel.js"></script>
+  <script>
+    const btn = document.querySelector("#exportBtn");
+    btn.addEventListener("click", () => {
+      export2Excel(tHeader, tbody, "我爱花朵");
+    });
+    // tHeader和tbody的数据需要一一对应
+    // let tHeader = ["鲜花", "颜色", "图片"];
+    let tHeader = { 
+      currentOrgName: "分店",
+      orderNo: "单号",
+      orderSourceName: "单据来源",
+      orderDate: "日期",
+      orderLineTypeDsp: "类别",
+      memberCode: "会员编号",
+      mobileNo: "电话",
+      memberCurrentOrgName: "会员所属门店",
+      staffNames: "服务员工",
+      qty: "消费数量",
+      paymentImage: '支付凭证'
+    };
+    let tbody = [
+      {
+        currentOrgId: 1635,
+        memberId: 639887,
+        currentOrgName: "梦家园总部",
+        orderSourceName: "线下",
+        memberCode: "",
+        memberName: "退货",
+        mobileNo: "156478953",
+        memberCurrentOrgName: "梦家园总部",
+        orderNo: "Y20240112094824790",
+        orderDate: "2024-01-12 09:48:25",
+        orderLineId: 1064018,
+        orderLineType: 92,
+        orderLineTypeDsp: "销售",
+        amount: 990,
+        qty: 1,
+        description: "生命之源（排）",
+        accountTypeDsp: "现金",
+        accountType: 1,
+        payAmount: 990,
+        payTypeCount: 1,
+        payTypeIndex: 0,
+        rebateAmount: 0,
+        cashRate: 1,
+        itemGroupInstanceName: "",
+        paymentImage: 'http://mjy-test.oss-cn-shenzhen.aliyuncs.com/2024/1/13/payMent/9b1cedb5ca82f2bb18bd293d4a9fcbf.jpg?Expires=2020494929&OSSAccessKeyId=LTAI5tEuX1woRTZXGd9vSGYu&Signature=IWyVyGfDcg8q4x%2Bd5R3Eus3%2BgnY%3D'
+      },
+      {
+        currentOrgId: 1635,
+        memberId: 639887,
+        currentOrgName: "梦家园总部",
+        orderSourceName: "线下",
+        memberCode: "",
+        memberName: "退货",
+        mobileNo: "156478953",
+        memberCurrentOrgName: "梦家园总部",
+        orderNo: "Y20240112094824790",
+        orderDate: "2024-01-12 09:48:25",
+        orderLineId: 1064019,
+        orderLineType: 92,
+        orderLineTypeDsp: "销售",
+        amount: 980,
+        qty: 1,
+        description: "圣波妮嘉 精华露Ⅱ",
+        accountTypeDsp: "现金",
+        accountType: 1,
+        payAmount: 980,
+        payTypeCount: 1,
+        payTypeIndex: 0,
+        rebateAmount: 0,
+        cashRate: 1,
+        itemGroupInstanceName: "",
+      },
+    ];
+
+    const export2Excel = (theadData, tbodyData, dataname) => {
+      const thKeys = Object.keys(theadData);
+      const thValues = Object.values(theadData);
+      let re = /http/; // 字符串中包含http,则默认为图片地址
+      let th_len = thKeys.length; // 表头的长度
+      let tb_len = tbodyData.length; // 记录条数
+      let width = 60; // 设置图片大小
+      let height = 60;
+
+      let thead = "<thead><tr>";
+      for (let i = 0; i < thKeys.length; i++) {
+        // const thItem = theadData
+        const key = thKeys[i];
+        const thValue = theadData[key];
+        thead += "<th>" + thValue + "</th>";
+      }
+      thead += "</tr></thead>";
+      console.log(thead);
+
+      // 添加表头信息;
+      // let thead = "<thead><tr>";
+      // for (let i = 0; i < th_len; i++) {
+      //   thead += "<th>" + thValues[i] + "</th>";
+      // }
+      // thead += "</tr></thead>";
+
+      // 添加每一行数据
+      let tbody = "<tbody>";
+      for (let i = 0; i < tb_len; i++) {
+        tbody += "<tr>";
+        let row = tbodyData[i]; // 获取每一行数据
+        let rowKeys = Object.keys(row);
+        for (let j = 0; j < rowKeys.length; j++) {
+          const key = thKeys[j];
+          // console.log(key)
+          // console.log(row)
+          if (re.test(row[key])) {
+            // 如果为图片，则需要加div包住图片
+            tbody +=
+              '<td style="width:' +
+              width +
+              "px; height:" +
+              height +
+              'px; text-align: center; vertical-align: middle"><div style="display:inline"><img src=\'' +
+              row[key] +
+              "' " +
+              " " +
+              "width=" +
+              '"' +
+              width +
+              '"' +
+              " " +
+              "height=" +
+              '"' +
+              height +
+              '"' +
+              "></div></td>";
+          } else {
+            tbody += '<td style="text-align:center">' + (row[key] || '') + "</td>";
+          }
+        }
+        tbody += "</tr>";
+
+        /* for (let key in row) {
+          if (re.test(row[key])) {
+            // 如果为图片，则需要加div包住图片
+            tbody +=
+              '<td style="width:' +
+              width +
+              "px; height:" +
+              height +
+              'px; text-align: center; vertical-align: middle"><div style="display:inline"><img src=\'' +
+              row[key] +
+              "' " +
+              " " +
+              "width=" +
+              '"' +
+              width +
+              '"' +
+              " " +
+              "height=" +
+              '"' +
+              height +
+              '"' +
+              "></div></td>";
+          } else {
+            tbody += '<td style="text-align:center">' + row[key] + "</td>";
+          }
+        } */
+        // tbody += "</tr>";
+      }
+      tbody += "</tbody>";
+
+      let table = thead + tbody;
+      console.log(table);
+      // 导出表格;
+      exportToExcel(table, dataname);
+    };
+  </script>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Example</title>
+</head>
+<body>
+
+<button id="notificationButton" onclick="handleNotification()">Send Notification</button>
+
+<script>
+    function handleNotification() {
+        // Check if the browser supports notifications
+        if (!('Notification' in window)) {
+            alert('This browser does not support desktop notification');
+        } else {
+            // Check the current notification permission
+            if (Notification.permission === 'granted') {
+                // If permission is granted, send a notification
+                sendNotification();
+            } else if (Notification.permission !== 'denied') {
+                // If permission is not denied, request permission
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        // If permission is granted, send a notification
+                        sendNotification();
+                    }
+                });
+            }
+        }
+    }
+
+    function sendNotification() {
+        // Create a notification
+        const notification = new Notification('Hello!', {
+            body: 'This is a notification from your web app.',
+        });
+    }
+</script>
+
+</body>
+</html>
